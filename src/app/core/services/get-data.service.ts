@@ -1,11 +1,14 @@
-import { Injectable } from '@angular/core';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
+import { catchError, Observable, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GetDataService {
- readonly baseUrl = 'https://angular.io/assets/images/tutorials/faa';
-
+ readonly holidayApi =  'https://date.nager.at/api/v3/NextPublicHolidaysWorldwide';
+ baseUrl = 'https://images.unsplash.com/photo-';
+ private httpClient= inject(HttpClient);
   protected housingLocationList: any[]= [
     {
       id: 0,
@@ -115,4 +118,11 @@ export class GetDataService {
   constructor() {
 
    }
+   getHolidayData$():Observable<any> {
+    return this.httpClient.get<any>(this.holidayApi,{}).pipe(
+      catchError((error:HttpErrorResponse) => {
+        return throwError(() => error);
+      })
+    )
+  }
 }

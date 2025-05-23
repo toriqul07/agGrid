@@ -22,31 +22,62 @@ export class AgGridListComponent {
   //   // { item: 'Tesla', price: 64950, priority: true },
   //   // { item: 'Ford', price: 33850, priority: false },
   //   // { item: 'Toyota', price: 29600, priority: false },
-  // ];
-  rowData:any = [];
+  housingLocationsData: any[] = [];
+  holidaysData: any[] = [];
+    rowData: any[] = [];
 
-  // Column Definitions: Defines & controls grid columns.
-   colDefs: ColDef[] = [
-    { field: 'name' },
-    {
-      field: 'city',
-    },
-    { field: 'photo' },
-    { field: 'availableUnits' },
-    { field: 'wifi'},
-    { field: 'laundry' },
-  ];
+  // Column Definitions: Defines the columns to be displayed.
+  colDefs: ColDef[] = [];
 
   defaultColDef: ColDef = {
     flex: 1,
   };
-  constructor(private getDataService: GetDataService) {
-    // console.log(this.getDataService.getAllHousingLocations());
+ constructor(private getDataService: GetDataService) {}
+
+  ngOnInit() {
     this.getDataFromService();
+    this.getHolidaysData();
   }
-  getDataFromService() {    
-    
-    this.rowData = this.getDataService.getAllHousingLocations();
-    console.log(this.rowData);
+
+  getDataFromService() {
+    this.housingLocationsData = this.getDataService.getAllHousingLocations();
+  }
+
+  getHolidaysData() {
+    this.getDataService.getHolidayData$().subscribe((data) => {
+      this.holidaysData = data;
+      console.log('Holidays Data:', this.holidaysData);
+    });
+  }
+  onChangeData(type: string) {
+    if (type == 'HL') {
+      this.rowData = this.housingLocationsData;
+      this.colDefs = [
+        { field: 'name' },
+        {
+          field: 'city',
+        },
+        { field: 'state' },
+        { field: 'state' },
+        { field: 'availableUnits' },
+        { field: 'wifi' },
+        { field: 'laundry' },
+      ];
+    } else {
+      this.rowData = this.holidaysData;
+      this.colDefs = [
+        { field: 'date' },
+        {
+          field: 'localName',
+        },
+        { field: 'name' },
+        { field: 'countryCode' },
+        { field: 'fixed' },
+        { field: 'global' },
+        { field: 'counties' },
+        { field: 'launchYear' },
+        { field: 'Public' },
+      ];
+    }
   }
 }
